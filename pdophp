@@ -1,0 +1,104 @@
+<?php   
+   try
+   {
+    global $pdo;
+    $pdo = new PDO("mysql:dbname=crudpdo;host=localhost;","root","12345");
+   }
+   catch(PDOException $e){
+        echo"Erro com banco de dados: ". $e->getMessage();
+   }
+   catch(Exception $e)
+   {
+    echo"Erro genérico: ". $e->getMessage();
+   }
+
+?>
+
+<?php   
+
+class Cliente {
+    private $nome;
+    private $idade;
+    private $email;
+    private $senha;
+
+    public function __construct($nome, $idade, $email, $senha)
+    {
+        $this->nome = $nome;
+        $this->idade = $idade;
+        $this->email = $email;
+        $this->senha = $senha;
+
+    }
+
+    public function setNome($nome){
+         $this->nome = $nome;  
+    }
+    public function getNome($nome){
+        return $this->nome;
+    }
+    public function setIdade($idade){
+        $this->idade = $idade;
+    }
+    public function getIdade($idade){
+        return $this->idade;
+    }
+    public function setEmail($email){
+        $this->email = $email;
+    }
+    public function getEmail($email){
+        return $this->email;
+    }
+    public function setSenha($senha){
+        $this->senha = $senha;
+    }
+    public function getSenha($senha){
+        return $this->senha;
+    }
+    
+    public function cadastrar(){
+        global $pdo;
+        $sql = "INSERT INTO Clientes(nome, idade, email, senha) VALUES(:nome, :idade, :email, :senha)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(":nome, $this->nome");
+        $stmt->bindValue(":idade, $this->idade");
+        $stmt->bindValue(":email, $this->email");
+        $stmt->bindValue(":senha, $this->senha");
+
+        $stmt->execute();
+    }
+}
+
+<?php
+    if(!empty($_POST)){
+        require_once './crudpdo.php';
+        require_once './Cliente.php';
+
+        $nome = $_POST['nome'];
+        $idade = $_POST['idade'];
+        $email = $_POST['email'];
+        $senha = md5($_POST['senha']);
+        
+        $cliente = new Cliente($nome, $idade, $email, $senha);
+
+        $cliente->cadastrar();
+
+    }
+?>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>CADASTRO</title>
+    </head>
+    <body>
+        <form action="" method="POST">
+            <input type="text" name="nome" placeholder="Nome do cliente">
+            <input type="number" name="idade" placeholder="Idade">
+            <input type="email" name="email" placeholder="Email">
+            <input type="password" name="senha" placeholder="Senha">
+            <input type="submit" value="Cadastrar">
+        </form>
+    </body>
+</html>
+
+
