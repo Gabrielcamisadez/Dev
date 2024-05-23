@@ -1,0 +1,46 @@
+<?php
+
+        session_start();
+
+        if(isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])){
+            echo "BEM VINDO" .$_SESSION['usuario']
+        }else{
+            header("location: login.html")
+        }
+
+
+    #if(!empty($_POST)){
+    
+        if($_SERVER['REQUEST_METHOD']=='POST'){
+        require_once './conexao.php';
+        require_once './Cliente.php';
+
+        $nome = $_POST['nome'];
+        $idade = $_POST['idade'];
+        $email = $_POST['email'];
+        $senha = md5($_POST['senha']);
+
+        $cliente = new Cliente($nome, $idade, $email, $senha);
+
+        $cliente -> cadastrar();
+    }
+    
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente</title>
+</head>
+<body>
+    <form action = "" method = "post">
+        <input type = "text" name = "nome" placeholder ="Nome do Cliente">
+        <input type = "number" name="idade" placeholder = "idade"><br>
+        <input type = "email" name = "email" placeholder = "Email">
+        <input type = "password" name ="senha" placeholder = "Senha"><br>
+        <input type = "submit" value = "Cadastrar">
+    </form>
+</body>
+</html>
